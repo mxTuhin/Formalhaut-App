@@ -14,6 +14,11 @@ public class APIAccess : MonoBehaviour
     public static string GetForgotPasswordURL => baseURL+"forgot-password";
     
     
-    //Login
+    //API Access
     public static string GetLoginURL => baseURL + apiVersion + "login";
+    public static string FetchNotificationURL => baseURL + apiVersion + "notifications";
+    public static string FetchProfileDataURL => baseURL + apiVersion + "profile-data";
+    
+    public static string fetchDeviceStateURL => baseURL + apiVersion + "device-state";
+    
 }

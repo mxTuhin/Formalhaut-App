@@ -7,12 +7,9 @@ public class VibrationManager : MonoBehaviour
     private static VibrationManager instance;
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        if(instance==null)
-            instance = this;
-        else
-            Destroy(gameObject);
+        instance = this;
     }
 
     public void PlayVibration()

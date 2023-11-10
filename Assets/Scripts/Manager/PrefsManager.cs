@@ -7,6 +7,11 @@ public class PrefsManager : MonoBehaviour
     
     public static string IsStartingForTheFirstTime = "IsStartingForTheFirstTime";
     
+    
+    public static string IsLoggedIn = "IsLoggedIn";
+    public static string UserID = "UserID";
+    public static string UserPassword = "UserPassword";
+    
     public static void SetString(string key, string value)
     {
         PlayerPrefs.SetString(key, value);
@@ -65,8 +70,8 @@ public class PrefsManager : MonoBehaviour
     {
         return PlayerPrefs.HasKey(key);
     }
-    
-    public static void Save()
+
+    private static void Save()
     {
         PlayerPrefs.Save();
     }

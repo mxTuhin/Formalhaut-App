@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,16 +17,16 @@ public class AudioManager : MonoBehaviour
     public static AudioClip GetError => instance.error;
     
     // Start is called before the first frame update
+    void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
-        if(instance==null)
-            instance = this;
-        else
-            Destroy(gameObject);
-        
         SetSFXSound();
     }
-    
+
     public static void PlaySFX(AudioClip clip)
     {
         instance.audioSource.PlayOneShot(clip);

@@ -24,15 +24,10 @@ public class DashboardController : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SetView(bool flag)
     {
         gameObject.SetActive(flag);
+        SetHomeView();
     }
 
     public void SetHomeView()
