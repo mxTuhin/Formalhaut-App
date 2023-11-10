@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DashboardController : MonoBehaviour
+public class NotificationController : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -14,10 +14,5 @@ public class DashboardController : MonoBehaviour
     void Update()
     {
         
-    }
-
-    public void SetView(bool flag)
-    {
-        gameObject.SetActive(flag);
     }
 }
