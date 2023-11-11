@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine.Android; // For Android permissions
 
@@ -8,21 +10,46 @@ public class LocationManager : MonoBehaviour
 {
     public TMP_Text locationText;
 
+    private bool checkedOnce;
+    
     private void Start()
     {
-        // Request permission for Android
-        #if UNITY_ANDROID
-        if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+        locationText.text = "Fetching Location...";
+        // Request permission for Android by Application Platform
+        if (Application.platform == RuntimePlatform.Android)
         {
-            Permission.RequestUserPermission(Permission.FineLocation);
+            if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+            {
+                Permission.RequestUserPermission(Permission.FineLocation);
+            }
+            else
+            {
+                checkedOnce = true;
+                // Start the location service
+                StartCoroutine(StartLocationService());
+            }
         }
-        
-        // Start the location service
-        StartCoroutine(StartLocationService());
-        
-        #elif UNITY_EDITOR
-        locationText.text = "Banani, Dhaka";
-#endif
+        else if (Application.platform == RuntimePlatform.OSXEditor)
+        {
+            StartCoroutine(GetCityCountry(23.66538313494425f,90.4805120379231f));
+        }
+    }
+
+    private void Update()
+    {
+        if(Application.platform == RuntimePlatform.Android)
+        {
+            if (!checkedOnce)
+            {
+                if (Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+                {
+                    Permission.RequestUserPermission(Permission.FineLocation);
+                    checkedOnce = true;
+                    StartCoroutine(StartLocationService());
+                }
+            }
+        }
+
     }
 
     private IEnumerator StartLocationService()
@@ -72,7 +99,13 @@ public class LocationManager : MonoBehaviour
     {
         string url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + latitude + "&lon=" + longitude;
 
-        using (WWW www = new WWW(url))
+        // Add the accept-language header to specify English
+        Dictionary<string, string> headers = new Dictionary<string, string>
+        {
+            { "Accept-Language", "en" }
+        };
+
+        using (WWW www = new WWW(url, null, headers))
         {
             yield return www;
 
@@ -82,7 +115,11 @@ public class LocationManager : MonoBehaviour
                 LocationData locationData = JsonUtility.FromJson<LocationData>(www.text);
 
                 // Update the text with city and country
-                locationText.text = "City: " + locationData.address.city + "\nCountry: " + locationData.address.country;
+                locationText.text = "City: " + locationData.address.suburb + "\n" + locationData.address.city;
+                if (locationData.address.city == "")
+                { 
+                    locationText.text = "Error #005";
+                }
             }
             else
             {
@@ -90,6 +127,7 @@ public class LocationManager : MonoBehaviour
             }
         }
     }
+
 
     [System.Serializable]
     private class LocationData
@@ -101,6 +139,6 @@ public class LocationManager : MonoBehaviour
     private class AddressData
     {
         public string city;
-        public string country;
+        public string suburb;
     }
 }
