@@ -79,12 +79,12 @@ public class LoginController : MonoBehaviour
     
     private IEnumerator Login(string username, string password)
     {
-        WWWForm form = new WWWForm();
-        form.AddField("username", username);
-        form.AddField("password", password);
-        
-        WWW www = new WWW(APIAccess.GetLoginURL, form);
+        string loginUrl = $"{APIAccess.GetLoginURL}?email={username}&password={password}";
+    
+        WWW www = new WWW(loginUrl);
+        CLog.Print("Access URL: " + loginUrl);
         yield return www;
+
         if (www.text == "0")
         {
             PrefsManager.SetBool(PrefsManager.IsLoggedIn, true);
@@ -96,6 +96,7 @@ public class LoginController : MonoBehaviour
             {
                 LoginBox.SetActive(true);
                 AutomatedLoginBox.SetActive(false);
+                SetView(false);
                 UIManager.GetInstance().GetDashboard().SetView(true);
             });
         }
@@ -110,6 +111,7 @@ public class LoginController : MonoBehaviour
             AudioManager.PlaySFX(AudioManager.GetError);
         }
     }
+
 
     private IEnumerator PushThroughAutomatedAccess()
     {
